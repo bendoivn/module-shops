@@ -7,7 +7,6 @@
  * @License GNU/GPL version 2 or any later version
  * @Createdate 3/9/2010 23:25
  */
-
 if( ! defined( 'NV_MAINFILE' ) ) die( 'Stop!!!' );
 
 if( ! function_exists( 'nv_pro_catalogs' ) )
@@ -24,16 +23,24 @@ if( ! function_exists( 'nv_pro_catalogs' ) )
 	{
 		global $db, $language_array, $db_config;
 
-		$sh = $sv = "";
+		$sh = $sv = $ss = "";
 
 		if( $data_block['type'] == 'v' )
 		{
 			$sv = "selected=\"selected\"";
 			$sh = "";
+			$ss = "";
 		}
 		if( $data_block['type'] == 'h' )
 		{
 			$sh = "selected=\"selected\"";
+			$sv = "";
+			$ss = "";
+		}
+		if( $data_block['type'] == 's' )
+		{
+			$ss = "selected=\"selected\"";
+			$sh = "";
 			$sv = "";
 		}
 
@@ -48,6 +55,7 @@ if( ! function_exists( 'nv_pro_catalogs' ) )
 						<select name=\"config_type\">
 							<option value=\"h\" " . $sh . ">Horizontal</option>
 							<option value=\"v\" " . $sv . ">Vertical</option>
+							<option value=\"s\" " . $ss . ">CSS multilevel</option>
 						</select>
 					</td>";
 		$html .= "</tr>";
@@ -97,6 +105,10 @@ if( ! function_exists( 'nv_pro_catalogs' ) )
 		{
 			$block_tpl_name = "block.catalogsh.tpl";
 		}
+		elseif( $block_config['type'] == 's' )
+		{
+			$block_tpl_name = "block.catalogss.tpl";
+		}
 
 		if( file_exists( NV_ROOTDIR . "/themes/" . $global_config['site_theme'] . "/modules/" . $mod_file . "/" . $block_tpl_name ) )
 		{
@@ -109,7 +121,7 @@ if( ! function_exists( 'nv_pro_catalogs' ) )
 
 		if( $module != $module_name )
 		{
-			$sql = "SELECT catid, parentid, lev, " . NV_LANG_DATA . "_title AS title, " . NV_LANG_DATA . "_alias AS alias, viewcat, numsubcat, subcatid, numlinks, " . NV_LANG_DATA . "_description AS description, inhome, " . NV_LANG_DATA . "_keywords AS keywords, who_view, groups_view FROM " . $db_config['prefix'] . "_" . $mod_data . "_catalogs ORDER BY sort ASC";
+			$sql = "SELECT `catid`, `parentid`, `lev`, `" . NV_LANG_DATA . "_title` AS `title`, `" . NV_LANG_DATA . "_alias` AS `alias`, `viewcat`, `numsubcat`, `subcatid`, `numlinks`, `" . NV_LANG_DATA . "_description` AS `description`, `inhome`, `" . NV_LANG_DATA . "_keywords` AS `keywords`, `who_view`, `groups_view` FROM `" . $db_config['prefix'] . "_" . $mod_data . "_catalogs` ORDER BY `order` ASC";
 
 			$list = nv_db_cache( $sql, "catid", $module );
 			foreach( $list as $row )
@@ -198,3 +210,4 @@ if( defined( 'NV_SYSTEM' ) )
 {
 	$content = nv_pro_catalogs( $block_config );
 }
+?>
